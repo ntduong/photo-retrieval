@@ -4,12 +4,13 @@ import os
 from collections import defaultdict
 
 # Hash functions supported in imagehash library
-available_hashfuncs = {"ahash": imagehash.average_hash,
-                       "phash": imagehash.phash,
-                       "dhash": imagehash.dhash,
-                       "whash-haar": imagehash.whash,
-                       "whash-db4": lambda img: imagehash.whash(img,
-                                                                mode='db4')}
+available_hashfuncs = {
+    "ahash": imagehash.average_hash,
+    "phash": imagehash.phash,
+    "dhash": imagehash.dhash,
+    "whash-haar": imagehash.whash,
+    "whash-db4": lambda img: imagehash.whash(img, mode='db4')
+}
 
 
 class PhotoRepo(object):
