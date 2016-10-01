@@ -58,10 +58,31 @@ class PhotoRepo(object):
         return res
 
     def add_photo(self, filename):
-        pass
+        """Add a new photo to the repository, assumed the input filename is valid.
+        """
+        if not is_photo(filename):
+            return False
+
+        if self.photo_filenames.count(filename) > 0:
+            return False
+
+        self.photo_filenames.append(filename)
+        self.photo_hash[self.hashfn(Image.open(filename))].append(filename)
+        return True
 
     def remove_photo(self, filename):
-        pass
+        """Remove the photo given by the filename from the repository if it
+        exists.  Assume the input filename is valid.
+        """
+        if not is_photo(filename):
+            return False
+
+        if self.photo_filenames.count(filename) == 0:
+            return False
+
+        self.photo_filenames.remove(filename)
+        self.photo_hash[self.hashfn(Image.open(filename))].remove(filename)
+        return True
 
 
 def is_photo(filename):
