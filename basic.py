@@ -4,7 +4,9 @@ import sys
 
 def usage():
     sys.stderr.write(
-        """%s <hash_method> <photo_repo> <query_photo> <num_results>"""
+        """%s <hash_method> <photo_repo> <query_photo> <num_results>
+        Example: `python basic.py ahash ./img ./test.jpg 2.`
+        """
         % sys.argv[0])
     sys.exit(1)
 
@@ -18,7 +20,7 @@ if __name__ == "__main__":
     results = repo.get_similar_photos(
         query_photo, num_results=int(num_results))
 
-    # TODO(duongnt): Consider using HTML template
+    # TODO: Consider using HTML template
     output_html = """
 <!DOCTYPE html>
 <html>
