@@ -2,6 +2,7 @@ from PIL import Image
 import imagehash
 import os
 from collections import defaultdict
+import io
 
 # Hash functions supported in imagehash library
 available_hashfuncs = {
@@ -40,6 +41,37 @@ class PhotoRepo(object):
             num_results = len(self.photo_filenames)
 
         query_hash = self.hashfn(Image.open(query_photo))
+        hamming_dists = defaultdict(list)
+        for h in self.photo_hash:
+            hamming_dists[h - query_hash].extend(self.photo_hash[h])
+
+        res, cnt = [], 0
+        for dist in sorted(hamming_dists):
+            if cnt >= num_results:
+                break
+            added = min(num_results - cnt, len(hamming_dists[dist]))
+            # res.extend(hamming_dists[dist][:added])
+            for photo in hamming_dists[dist][:added]:
+                res.append((photo, dist))
+
+            cnt += added
+
+        return res
+
+    def get_similar_photos_for_bytes(self,
+                                     query_photo_in_bytes,
+                                     num_results=-1):
+        """Return photos which are most similar to the query photo.
+
+        When num_results = -1, return all photos in the repo in
+        descending order of similarity score. Otherwise, return top
+        num_results photos.
+        """
+
+        if num_results == -1:
+            num_results = len(self.photo_filenames)
+
+        query_hash = self.hashfn(Image.open(io.BytesIO(query_photo_in_bytes)))
         hamming_dists = defaultdict(list)
         for h in self.photo_hash:
             hamming_dists[h - query_hash].extend(self.photo_hash[h])
